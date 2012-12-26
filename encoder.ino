@@ -4,8 +4,8 @@
   license GPL
 */
 
-
 #include <Ssdrcs.h>
+
 
 Ssdrcs ssegment(7);
 
@@ -26,11 +26,25 @@ void setup ()
 	digitalWrite(pina, HIGH);
 	digitalWrite(pinb, HIGH);
 
-	attachInterrupt(interra, encoder, CHANGE);
+ 	attachInterrupt(interra, encoder, CHANGE);
 	attachInterrupt(interrb, encoder, CHANGE);
+ 	//attachInterrupt(interra, encodersimply, FALLING);
+	//attachInterrupt(interrb, encodersimply, FALLING);
 
-	ssegment.testSSD();
+	//ssegment.testSSD();
 }
+
+
+void encodersimply()
+{
+	// fixme need use readPort(byte)
+	int ra = digitalRead(pina);
+	int rb = digitalRead(pinb);
+	
+	if ((HIGH == ra) && (LOW  == rb)) {encoderangle++;}
+	if ((LOW  == ra) && (HIGH == rb)) {encoderangle--;}
+}
+
 
 void encoder()
 {
@@ -114,12 +128,23 @@ void encoder()
 
 
 	  --------------------------------
-	  correct numbers: 0x4B 0x87
+          01 00 10 11 0x4B                          10 00 01 11 0x87
+          
+	  correct numbers full turn: 0x4B 0x87
 	  --------------------------------
+
+
+          --------------------------------
+          01 00 10 11          = 0x4B     10 00 01 11          = 0x87
+             00 10 11 01       = 0x2D        00 01 11 10       = 0x1E
+                10 11 01 00    = 0xB4           01 11 10 00    = 0x78
+                   11 01 00 10 = 0xD2              11 10 00 01 = 0xE1             
+          correct numbers half turn:
+          --------------------------------
 	 */
 
 
-	// fixme need use read(byte)
+	// fixme need use readPort(byte)
 	int ra = digitalRead(pina);
 	int rb = digitalRead(pinb);
 	int a;
@@ -133,14 +158,26 @@ void encoder()
 	encoderstate = encoderstate << 1;
 	encoderstate = encoderstate | b;
 
-	if (0x4B == encoderstate) {encoderangle++;}
-	if (0x87 == encoderstate) {encoderangle--;}
+	if ((0x4B == encoderstate) ||
+            (0x2D == encoderstate) ||
+            (0xB4 == encoderstate) ||
+            (0xD2 == encoderstate)) {encoderangle++;}
+	if ((0x87 == encoderstate) ||
+            (0x1E == encoderstate) ||
+            (0x78 == encoderstate) ||
+            (0xE1 == encoderstate)) {encoderangle--;}
 		
+	
+        //ssegment.SSDhex(encoderstate, true);
+	ssegment.SSDdecimal(encoderangle, true);
+        //ssegment.SSDhex(encoderangle, true);
+	
 }
+
+
 
 
 void loop ()
 {
-	ssegment.SSDdecimal(encoderangle, true);
-	delay(100);
+
 }

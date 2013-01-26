@@ -15,7 +15,9 @@ class encoder
 public:
 	encoder(int pina, int pinb, int start_angle); // fixme move pina->encoder_pin_a intera->encoder_interrupt_a
 	int get_angle();
-	void encoderhalf();
+	int set_angle(int angle);
+	int encoderhalf();
+	int encoderfull();
 private:
 	int _encoder_angle;
 	byte _encoder_state; // == FIFO (Queue)

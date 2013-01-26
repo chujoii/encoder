@@ -58,7 +58,7 @@ void encoder::encodersimply()
 }
 */
 
-void encoder::encoderhalf()
+int encoder::encoderhalf()
 {
 	/*
 	  see description in README.org
@@ -106,10 +106,11 @@ void encoder::encoderhalf()
 	    (0x08 == _encoder_state) ||
 	    (0x01 == _encoder_state)) {_encoder_angle++;}
 
+	return _encoder_angle;
 }
 
-/*
-void encoder::encoderfull()
+
+int encoder::encoderfull()
 {
 
 
@@ -130,17 +131,24 @@ void encoder::encoderfull()
 	if ((0x4B == _encoder_state) ||
             (0x2D == _encoder_state) ||
             (0xB4 == _encoder_state) ||
-            (0xD2 == _encoder_state)) {_encoder_angle--;}
+            (0xD2 == _encoder_state)) {_encoder_angle--;};
 	if ((0x87 == _encoder_state) ||
             (0x1E == _encoder_state) ||
             (0x78 == _encoder_state) ||
-            (0xE1 == _encoder_state)) {_encoder_angle++;}
+            (0xE1 == _encoder_state)) {_encoder_angle++;};
+	return _encoder_angle;
 }
-*/
+
 
 
 
 int encoder::get_angle()
 {
+	return _encoder_angle;
+}
+
+int encoder::set_angle(int angle)
+{
+	_encoder_angle = angle;
 	return _encoder_angle;
 }

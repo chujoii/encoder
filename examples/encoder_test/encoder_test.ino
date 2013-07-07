@@ -4,29 +4,38 @@
   license GPL
 */
 
-#include <ssdrcs.h>
+
 #include <encoder.h>
 
-ssdrcs ssegment(7);
 
 encoder enc(2, 3, 30);
 
+boolean changes = true;
 
 void eintrptwrapper()
 {
 	enc.encoderhalf();
+	changes = true;
 }
 
 void setup ()
 {
+
 	attachInterrupt(0, eintrptwrapper, CHANGE);
 	attachInterrupt(1, eintrptwrapper, CHANGE);
+
+	delay(1000);
+	Serial.begin(9600);
 }
 
 
 
 void loop ()
 {
-	ssegment.SSDdecimal(enc.get_angle(), true);
+	if (changes){
+		Serial.println(enc.get_angle());
+		changes = false;
+	}
+	
 	delay(100);
 }

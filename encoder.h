@@ -16,15 +16,15 @@ public:
 	encoder(int pina, int pinb, int start_angle); // fixme move pina->encoder_pin_a intera->encoder_interrupt_a
 	int get_angle();
 	int set_angle(int angle);
-	int encoderhalf();
-	int encoderfull();
+	int get_state();
+	boolean encoderhalf();
+	boolean encoderfull();
+
 private:
-	int _encoder_angle;
-	byte _encoder_state; // == FIFO (Queue)
-	int8_t _interra;
-	uint8_t _interrb;
-	int _pina;
-	int _pinb;
+	volatile int _encoder_angle;
+	volatile byte _encoder_state; // == FIFO (Queue)
+	volatile int _pina;
+	volatile int _pinb;
 
 	//void encodersimply();
 	//void encoderhalf();

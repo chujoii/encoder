@@ -8,40 +8,25 @@
 
 
 
-
-encoder::encoder(int pina, int pinb, int start_angle) // fixme move pina->encoder_pin_a intera->encoder_interrupt_a
+encoder::encoder(int start_angle)
 {
 	_encoder_angle = start_angle;
-	_encoder_state = 0x1E; // == FIFO (Queue)
-
-	_pina = pina;
-	_pinb = pinb;
-
-	pinMode(_pina, INPUT);
-	pinMode(_pinb, INPUT);
+	_encoder_state = 0x1E; // == FIFO (Queue) start good value
 }
 
 
 
-
-
-
-
-
-
 /*
-void encoder::encodersimply()
+void encoder::encodersimply(int ra, int rb)
 {
-	// fixme need use readPort(byte)
-	int ra = digitalRead(_pina);
-	int rb = digitalRead(_pinb);
-	
 	if ((HIGH == ra) && (LOW  == rb)) {_encoder_angle++;}
 	if ((LOW  == ra) && (HIGH == rb)) {_encoder_angle--;}
 }
 */
 
-boolean encoder::encoderhalf()
+
+
+byte encoder::encoderhalf(byte a, byte b)
 {
 	/*
 	  see description in README.org
@@ -60,94 +45,66 @@ boolean encoder::encoderhalf()
                    xx xx 00 10 = 0x02              xx xx 00 01 = 0x01             
           correct numbers half turn:
           --------------------------------
+
 	*/
 
 
-	// fixme need use readPort(byte)
-
-	int ra = digitalRead(_pina);
-	int rb = digitalRead(_pinb);
-	int a;
-	int b;
-
 	int local_encoder_angle = _encoder_angle;
 	byte local_encoder_state = _encoder_state;
-	boolean clash = true; // if (clash == false) -> no clash: good    if (clash == true) -> clash exist
+	byte result = 1;
 
-	if (ra == HIGH) {a = 1;} else {a = 0;}
-	if (rb == HIGH) {b = 1;} else {b = 0;}
+	local_encoder_state = ((((local_encoder_state << 1) | a ) << 1 ) | b ) & 0x0F;
 
-	local_encoder_state = local_encoder_state << 1;
-	local_encoder_state = local_encoder_state | a;
-	local_encoder_state = local_encoder_state << 1;
-	local_encoder_state = local_encoder_state | b;
-
-	local_encoder_state = local_encoder_state & 0x0F;
 
 	if ((0x0B == local_encoder_state) ||
 	    (0x0D == local_encoder_state) ||
 	    (0x04 == local_encoder_state) ||
-	    (0x02 == local_encoder_state)) {local_encoder_angle--; clash=false;}
+	    (0x02 == local_encoder_state)) {local_encoder_angle--; result=0;}
 	
 	if ((0x07 == local_encoder_state) ||
 	    (0x0E == local_encoder_state) ||
 	    (0x08 == local_encoder_state) ||
-	    (0x01 == local_encoder_state)) {local_encoder_angle++; clash=false;}
+	    (0x01 == local_encoder_state)) {local_encoder_angle++; result=0;}
 
-	if (_encoder_state == local_encoder_state) {clash=true;	return (!clash);}
+	if (_encoder_state == local_encoder_state) {result=2;}
 	
-	if (!clash) { // if no_clash -> store angle state
+	if (0 == result) { // if no_clash -> store angle state
 		_encoder_angle = local_encoder_angle;
 		_encoder_state = local_encoder_state;
 	}
-
-	return (!clash);
+	
+	return result; // return        0 - good: encoder rotated        1 - default, no changes (error)        2 - very strange error
 }
 
 
-boolean encoder::encoderfull()
+
+byte encoder::encoderfull(byte a, byte b)
 {
-
-
-	// fixme need use readPort(byte)
-	int ra = digitalRead(_pina);
-	int rb = digitalRead(_pinb);
-	int a;
-	int b;
-	
-
 	int local_encoder_angle = _encoder_angle;
 	byte local_encoder_state = _encoder_state;
-	boolean clash = true; // if (clash == false) -> no clash: good    if (clash == true) -> clash exist
+	byte result = 1;
 
-	if (ra == HIGH) {a = 1;} else {a = 0;}
-	if (rb == HIGH) {b = 1;} else {b = 0;}
-
-	local_encoder_state = local_encoder_state << 1;
-	local_encoder_state = local_encoder_state | a;
-	local_encoder_state = local_encoder_state << 1;
-	local_encoder_state = local_encoder_state | b;
+	local_encoder_state = (((local_encoder_state << 1) | a ) << 1 ) | b;
 
 	if ((0x4B == local_encoder_state) ||
             (0x2D == local_encoder_state) ||
             (0xB4 == local_encoder_state) ||
-            (0xD2 == local_encoder_state)) {local_encoder_angle--; clash=false;};
+            (0xD2 == local_encoder_state)) {local_encoder_angle--; result=0;};
 	
 	if ((0x87 == local_encoder_state) ||
             (0x1E == local_encoder_state) ||
             (0x78 == local_encoder_state) ||
-            (0xE1 == local_encoder_state)) {local_encoder_angle++; clash=false;};
+            (0xE1 == local_encoder_state)) {local_encoder_angle++; result=0;};
 
-	if (_encoder_state == local_encoder_state) {clash=true;} // fixme ????????????????????
+	if (_encoder_state == local_encoder_state) {result=2;} // fixme ????????????????????
 
-	if (!clash) { // if no_clash -> store angle state
+	if (0 == result) { // if no_clash -> store angle state
 		_encoder_angle = local_encoder_angle;
 		_encoder_state = local_encoder_state;
 	}
 
-	return (!clash);
+	return result; // return        0 - good: encoder rotated        1 - default, no changes (error)        2 - very strange error
 }
-
 
 
 
@@ -156,11 +113,15 @@ int encoder::get_angle()
 	return _encoder_angle;
 }
 
+
+
 int encoder::set_angle(int angle)
 {
 	_encoder_angle = angle;
 	return _encoder_angle;
 }
+
+
 
 int encoder::get_state()
 {

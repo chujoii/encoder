@@ -13,22 +13,16 @@
 class encoder
 {
 public:
-	encoder(int pina, int pinb, int start_angle); // fixme move pina->encoder_pin_a intera->encoder_interrupt_a
+	encoder(int start_angle);
 	int get_angle();
 	int set_angle(int angle);
 	int get_state();
-	boolean encoderhalf();
-	boolean encoderfull();
+	byte encoderhalf(byte a, byte b); // return        0 - good: encoder rotated        1 - default, no changes (error)        2 - very strange error
+	byte encoderfull(byte a, byte b); // return        0 - good: encoder rotated        1 - default, no changes (error)        2 - very strange error
 
 private:
 	volatile int _encoder_angle;
 	volatile byte _encoder_state; // == FIFO (Queue)
-	volatile int _pina;
-	volatile int _pinb;
-
-	//void encodersimply();
-	//void encoderhalf();
-	//void encoderfull();
 };
 
 #endif

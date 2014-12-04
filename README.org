@@ -1,8 +1,55 @@
+README.org --- description
 
 
 
+Copyright (C) 2012 Roman V. Prikhodchenko
 
-	/*
+
+
+Author: Roman V. Prikhodchenko <chujoii@gmail.com>
+
+
+
+  This file is part of jellyfish.
+
+  jellyfish is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  jellyfish is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with jellyfish.  If not, see <http://www.gnu.org/licenses/>.
+
+
+
+* Keywords:
+encoder arduino microcontroller
+
+
+
+* Description:
+  
+
+* Usage:
+use it
+
+
+  
+* History:
+Initial project version began about 2012.12(Dec).21
+
+
+* Dependences:
+
+* Encoder
+
+#+BEGIN_SRC fundamental
+
 	   encoderstate == FIFO (Queue)
 
 	   00 00 00 00 start        B0000 0000=0x00
@@ -19,14 +66,14 @@
 	    ____      _____
 	   a    |____|     
 	    _______      ____
-           b       |____|
+         b       |____|
 
 
 
 	   correct
 	        10 00 01 11        B1000 0111=0x87
 	    _______      ____
-           a       |____|
+         a       |____|
 	    ____      _____
 	   b    |____|     
 
@@ -37,7 +84,7 @@
 	   not finished (for example)
 	      11   10 00 01   (11)        B1110 0001=0xE1
 	       _______          .......
-           a__|       |_____...|
+         a__|       |_____...|
 	    ________      __..........
 	   b        |____|
 
@@ -49,7 +96,7 @@
 	    _______      _____
 	   a       |____|     
 	    _______________
-           b
+         b
 	   
 
 
@@ -57,7 +104,7 @@
 	   incorrect (small motion)
 	    xx xx 10    11        Bxxxx1011=0x?B (0x4B imposible ?)
 	    _______________
-           a
+         a
 	    _______      _____
 	   b       |____|     
 	   
@@ -67,7 +114,7 @@
 	   incorrect (small motion)
 	        10  11   01    11        B1011 0111=0xB7
 	    ______________      ____
-           a              |____|
+         a              |____|
 	    ____      ______________
 	   b    |____|     
 
@@ -78,7 +125,7 @@
 	    ____      ______________
 	   a    |____|     
 	    ______________      ____
-           b              |____|
+         b              |____|
 
 
 
@@ -97,4 +144,5 @@
           correct numbers half turn:
           --------------------------------
 
-	 */
+
+#+END_SRC fundamental

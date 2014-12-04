@@ -11,28 +11,36 @@ const int ec_pin_a_interrupt = 0;
 const int ec_pin_b = 3;
 const int ec_pin_b_interrupt = 1;
 
-encoder enc(ec_pin_a, ec_pin_b, 30);
+encoder enc(30);
 
-volatile boolean changes = false;
+volatile byte changes = 1;
+
+
 
 void eintrptwrapper()
 {
-	changes = enc.encoderhalf();
+	byte a;
+	byte b;
+
+	byte ec_port = PIND;
+
+	if ((ec_port & B00001000) != 0) {a = 1;} else {a = 0;}
+	if ((ec_port & B00000100) != 0) {b = 1;} else {b = 0;}
+
+	changes = enc.encoderhalf(a, b);
 	// or try
-	//changes = enc.encoderfull();
+	//changes = enc.encoderfull(a, b);
 }
+
+
 
 void setup ()
 {
-
-
 	pinMode(ec_pin_a, INPUT);
 	pinMode(ec_pin_b, INPUT);
-
 	
 	digitalWrite(ec_pin_a, HIGH); // uncomment if you need PushUp
 	digitalWrite(ec_pin_b, HIGH); // uncomment if you need PushUp
-	
 	
 	attachInterrupt(ec_pin_a_interrupt, eintrptwrapper, CHANGE);
 	attachInterrupt(ec_pin_b_interrupt, eintrptwrapper, CHANGE);
@@ -43,8 +51,9 @@ void setup ()
 }
 
 
+
 void print_zero_fill_binary(byte n){
-	int mask = 1<<(sizeof(n)*8); //B10000000;
+	int mask = 1<<(sizeof(n)*8 - 1); //B10000000;
 	while (mask){
 		if (n & mask)
 			Serial.print("1");
@@ -55,15 +64,17 @@ void print_zero_fill_binary(byte n){
 }
 
 
+
 void loop ()
 {
-	if (changes){
+
+	if (0 == changes) { // return        0 - good: encoder rotated        1 - default, no changes (error)        2 - very strange error
+		changes = 1;
+
 		byte ec_state = enc.get_state();
 		int ec_angle = enc.get_angle();
-		Serial.print("0x");Serial.print(ec_state, HEX); Serial.print("    ");
-		print_zero_fill_binary(ec_state);Serial.print("    ");
-		
+
+		print_zero_fill_binary(ec_state); Serial.print("\t");
 		Serial.println(ec_angle);
-		changes = 0;
 	}
 }

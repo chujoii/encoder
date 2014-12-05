@@ -1,8 +1,24 @@
-/*
-  encoder.cpp - Library for encoder.
-  Created by Roman V. Prikhodchenko, 2012.12.21
-  Released into the GPLv3.
- */
+/*	
+        encoder.cpp - Library for encoder.
+        Copyright (C) 2012 Roman V. Prikhodchenko
+
+        This file is part of encoder.
+
+        encoder is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        encoder is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with encoder.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 
 #include <encoder.h>
 
@@ -13,16 +29,6 @@ encoder::encoder(int start_angle)
 	_encoder_angle = start_angle;
 	_encoder_state = 0x1E; // == FIFO (Queue) start good value
 }
-
-
-
-/*
-void encoder::encodersimply(int ra, int rb)
-{
-	if ((HIGH == ra) && (LOW  == rb)) {_encoder_angle++;}
-	if ((LOW  == ra) && (HIGH == rb)) {_encoder_angle--;}
-}
-*/
 
 
 

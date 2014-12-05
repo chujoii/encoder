@@ -1,8 +1,8 @@
 /*
-  created 2012.12.21
-  by Roman V. Prikhodchenko chujoii@gmail.com
-  license GPL
-*/
+  encoder_test.ino - example for test encoder library.
+  Copyright (C) 2012 Roman V. Prikhodchenko.
+  Released into the GPLv3.
+ */
 
 #include <encoder.h>
 
@@ -11,7 +11,7 @@ const int ec_pin_a_interrupt = 0;
 const int ec_pin_b = 3;
 const int ec_pin_b_interrupt = 1;
 
-encoder enc(30);
+encoder enc(30); // create an instance of the encoder class, and set start angle to 30
 
 volatile byte changes = 1;
 

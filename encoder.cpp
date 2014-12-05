@@ -34,27 +34,6 @@ encoder::encoder(int start_angle)
 
 byte encoder::encoderhalf(byte a, byte b)
 {
-	/*
-	  see description in README.org
-	  
-	  --------------------------------
-          xx xx 10 11 0x0B                          xx xx 01 11 0x07
-          
-	  correct numbers full turn: 0x4B 0x87
-	  --------------------------------
-	  
-
-          --------------------------------
-          xx xx 10 11          = 0x0B     xx xx 01 11          = 0x07
-             xx xx 11 01       = 0x0D        xx xx 11 10       = 0x0E
-                xx xx 01 00    = 0x04           xx xx 10 00    = 0x08
-                   xx xx 00 10 = 0x02              xx xx 00 01 = 0x01             
-          correct numbers half turn:
-          --------------------------------
-
-	*/
-
-
 	int local_encoder_angle = _encoder_angle;
 	byte local_encoder_state = _encoder_state;
 	byte result = 1;
@@ -62,6 +41,7 @@ byte encoder::encoderhalf(byte a, byte b)
 	local_encoder_state = ((((local_encoder_state << 1) | a ) << 1 ) | b ) & 0x0F;
 
 
+	//see description in README.org
 	if ((0x0B == local_encoder_state) ||
 	    (0x0D == local_encoder_state) ||
 	    (0x04 == local_encoder_state) ||
@@ -92,6 +72,7 @@ byte encoder::encoderfull(byte a, byte b)
 
 	local_encoder_state = (((local_encoder_state << 1) | a ) << 1 ) | b;
 
+	//see description in README.org
 	if ((0x4B == local_encoder_state) ||
             (0x2D == local_encoder_state) ||
             (0xB4 == local_encoder_state) ||
